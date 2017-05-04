@@ -110,6 +110,7 @@ namespace YoutubeAPIWebApplication
             ulong dislikeCount = 0;
             ulong commentCount = 0;
             ulong subscriberCount = 0;
+            bool alreadyExists = false;
 
             // Add each result to the appropriate list, and then display the lists of
             // matching videos, channels, and playlists.
@@ -136,7 +137,10 @@ namespace YoutubeAPIWebApplication
                         type = "playlist";
                         break;
                 }
-                if (id != null && chanId != null)
+
+                alreadyExists = youtubeVideos.Any(v => v.id == id);
+
+                if (!alreadyExists && id != null && chanId != null)
                 {
                     var chanRequest = ytService.Channels.List("statistics");
                     chanRequest.Id = chanId;
@@ -172,7 +176,9 @@ namespace YoutubeAPIWebApplication
                         }
                     }
                 }
-                if ((int) subscriberCount < maxSubscribers)
+                //bool alreadyExists = youtubeVideos.Any(v => v.id == id);
+
+                if (!alreadyExists && (int) subscriberCount < maxSubscribers)
                     youtubeVideos.Add(new YoutubeVideo() {
                         title = searchResult.Snippet.Title,
                         id = id,
